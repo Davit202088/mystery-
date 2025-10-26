@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const crypto = require('crypto');
-const { pool } = require('../config/database');
+const { pool } = require('../config/database-sqlite');
 const { verifyToken } = require('../middleware/auth');
 
 // Конфигурация ЮКассы
@@ -147,7 +147,7 @@ router.post('/webhook/yookassa', async (req, res) => {
 
       // Обновить статус платежа
       await connection.execute(
-        `UPDATE transactions SET status = 'completed', completedAt = NOW()
+        `UPDATE transactions SET status = 'completed', completedAt = CURRENT_TIMESTAMP
          WHERE metadata LIKE ?`,
         [`%${yookassaPaymentId}%`]
       );

@@ -9,6 +9,9 @@ const http = require('http');
 // Загрузить переменные окружения
 dotenv.config();
 
+// Инициализация базы данных
+const { initDatabase } = require('./config/database-sqlite');
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
@@ -132,16 +135,34 @@ app.use((err, req, res, next) => {
 // ========================
 // ЗАПУСК СЕРВЕРА
 // ========================
-server.listen(PORT, () => {
-  console.log(`
+async function startServer() {
+  try {
+    // Инициализировать базу данных
+    await initDatabase();
+
+    // Запустить сервер
+    server.listen(PORT, () => {
+      console.log(`
 ╔════════════════════════════════════╗
 ║  🎁 RULDETKA - Mystery Box        ║
-║  Сервер запущен на порту ${PORT}         ║
-║  Окружение: ${NODE_ENV}              ║
-║  Домен: ruldetka.ru               ║
+║  Сервер запущен на порту ${PORT}    ║
+║  Окружение: ${NODE_ENV}         ║
+║  База данных: SQLite (локально)   ║
+║  URL: http://localhost:${PORT}    ║
 ╚════════════════════════════════════╝
-  `);
-});
+      `);
+      console.log('\n📌 Тестовые учетные данные:');
+      console.log('   Email: test@example.com');
+      console.log('   Пароль: password123');
+      console.log('   Баланс: 5000 ₽\n');
+    });
+  } catch (error) {
+    console.error('❌ Ошибка запуска сервера:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
 
 // Обработка сигналов выключения
 process.on('SIGTERM', () => {

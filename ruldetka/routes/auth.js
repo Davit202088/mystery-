@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { pool } = require('../config/database');
+const { pool } = require('../config/database-sqlite');
 const { verifyToken } = require('../middleware/auth');
 
 // Генерирование уникального userId
@@ -106,7 +106,7 @@ router.post('/login', async (req, res) => {
 
     // Обновить lastActive
     await connection.execute(
-      'UPDATE users SET lastActive = NOW() WHERE id = ?',
+      'UPDATE users SET lastActive = CURRENT_TIMESTAMP WHERE id = ?',
       [user.id]
     );
 
@@ -212,7 +212,7 @@ router.put('/profile', verifyToken, async (req, res) => {
        firstName = COALESCE(?, firstName),
        lastName = COALESCE(?, lastName),
        avatar = COALESCE(?, avatar),
-       updatedAt = NOW()
+       updatedAt = CURRENT_TIMESTAMP
        WHERE userId = ?`,
       [username || null, firstName || null, lastName || null, avatar || null, userId]
     );

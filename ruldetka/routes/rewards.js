@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../config/database');
+const { pool } = require('../config/database-sqlite');
 const { verifyToken } = require('../middleware/auth');
 
 // ========================
@@ -113,14 +113,14 @@ router.post('/claim/:rewardId', verifyToken, async (req, res) => {
 
       // Записать что награда получена
       await connection.execute(
-        'INSERT INTO user_rewards (userId, rewardId, claimedAt) VALUES (?, ?, NOW())',
+        'INSERT INTO user_rewards (userId, rewardId, claimedAt) VALUES (?, ?, CURRENT_TIMESTAMP)',
         [dbUserId, reward.id]
       );
 
       // Добавить в логи
       await connection.execute(
         `INSERT INTO reward_logs (userId, rewardId, action, amount, timestamp)
-         VALUES (?, ?, 'claim', ?, NOW())`,
+         VALUES (?, ?, 'claim', ?, CURRENT_TIMESTAMP)`,
         [dbUserId, reward.id, reward.coins]
       );
 
@@ -343,7 +343,7 @@ router.post('/admin/grant-coins', verifyToken, async (req, res) => {
       // Записать в логи
       await connection.execute(
         `INSERT INTO admin_grants (adminId, targetUserId, coins, reason, timestamp)
-         VALUES (?, ?, ?, ?, NOW())`,
+         VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
         [userId, targetUserId, coins, reason || 'No reason']
       );
 

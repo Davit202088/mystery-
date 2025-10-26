@@ -5,3 +5,11 @@ node_modules/
 npm-debug.log
 .DS_Store
 package-lock.json
+
+# SQLite database
+*.db
+*.db-journal
+
+# Test scripts
+test-*.js
+fix-*.js

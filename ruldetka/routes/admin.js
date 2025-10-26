@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../config/database');
+const { pool } = require('../config/database-sqlite');
 const { verifyToken } = require('../middleware/auth');
 
 // Middleware для проверки админа (простая версия)
@@ -94,7 +94,7 @@ router.put('/boxes/:boxId', isAdmin, async (req, res) => {
        image = COALESCE(?, image),
        rarity = COALESCE(?, rarity),
        isActive = COALESCE(?, isActive),
-       updatedAt = NOW()
+       updatedAt = CURRENT_TIMESTAMP
        WHERE boxId = ?`,
       [name || null, description || null, price || null, type || null, itemCount || null, image || null, rarity || null, isActive !== undefined ? isActive : null, boxId]
     );
@@ -267,7 +267,7 @@ router.get('/stats', isAdmin, async (req, res) => {
 
     // Активные пользователи за последние 24 часа
     const [activeUsers] = await connection.execute(
-      'SELECT COUNT(DISTINCT userId) as count FROM opened_boxes WHERE createdAt > DATE_SUB(NOW(), INTERVAL 24 HOUR)'
+      "SELECT COUNT(DISTINCT userId) as count FROM opened_boxes WHERE createdAt > datetime('now', '-24 hours')"
     );
 
     connection.release();
