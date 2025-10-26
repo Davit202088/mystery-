@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎁 Мистери Боксы - Открывай и выигрывай!</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- НАВИГАЦИЯ -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <i class="fas fa-gift"></i>
+                <span>RULDETKA</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#boxes">Боксы</a></li>
+                <li><a href="#leaderboard">Побеждают</a></li>
+                <li id="referralMenuBtn" class="nav-item-user" style="display: none;">
+                    <a href="#referral" onclick="openReferralModal()" style="cursor: pointer;">
+                        <i class="fas fa-share-alt"></i> Реферал
+                    </a>
+                </li>
+                <li id="userMenuBtn" class="nav-item-user" style="display: none;">
+                    <a href="#profile">👤 <span id="usernameBadge">Профиль</span></a>
+                </li>
+                <li id="authMenuBtn">
+                    <a href="#auth" class="btn-primary">Вход</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ГЛАВНАЯ СЕКЦИЯ -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i>
+                Откройте свой первый бокс бесплатно
+            </div>
+            <h1>Мистери Боксы</h1>
+            <h2>с <span class="gradient-text">невероятными</span></h2>
+            <h2 class="gradient-text-2">призами</h2>
+            <p class="hero-subtitle">Откройте бокс и выигрите iPhone, PlayStation, AirPods и другие премиум призы</p>
+
+            <div class="hero-buttons">
+                <button id="openFirstBoxBtn" class="btn btn-primary btn-lg" onclick="scrollToBoxes()">
+                    <i class="fas fa-gift"></i> Открыть бокс
+                </button>
+                <button class="btn btn-secondary btn-lg">Смотреть призы</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ ВЫБОРА БОКСОВ -->
+    <section id="boxes" class="boxes-section">
+        <h2>Выберите свой бокс</h2>
+        <p class="section-subtitle">Каждый бокс содержит гарантированный приз</p>
+
+        <div id="boxesContainer" class="boxes-grid">
+            <!-- Боксы будут загружены через JavaScript -->
+            <div class="loading">Загрузка боксов...</div>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ ПОБЕД -->
+    <section id="leaderboard" class="wins-section">
+        <div class="wins-header">
+            <h2>
+                <i class="fas fa-trophy"></i>
+                Последние выигрыши
+            </h2>
+            <p>Посмотрите, что выигрались другие игроки</p>
+        </div>
+
+        <div id="winsContainer" class="wins-list">
+            <div class="loading">Загрузка побед...</div>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ НАГРАД И БОНУСОВ -->
+    <section id="rewards" class="rewards-section">
+        <div class="rewards-header">
+            <h2>
+                <i class="fas fa-coins"></i>
+                Заработайте монеты
+            </h2>
+            <p>Выполняйте действия и получайте награды</p>
+        </div>
+
+        <div id="rewardsContainer" class="rewards-grid">
+            <div class="loading">Загрузка наград...</div>
+        </div>
+
+        <div class="rewards-footer">
+            <button class="btn btn-secondary" onclick="openRewardHistoryModal()">
+                <i class="fas fa-history"></i> История наград
+            </button>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ ИНФОРМАЦИИ -->
+    <section id="features" class="features-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Безопасно</h3>
+                <p>Гарантия подлинности всех призов</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Мгновенно</h3>
+                <p>Получите приз сразу после открытия</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3>Выгодно</h3>
+                <p>Призы стоимостью выше цены бокса</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA БЛОК -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Готовы испытать удачу?</h2>
+            <p>Откройте свой первый бокс прямо сейчас</p>
+            <button class="btn btn-primary btn-lg" onclick="scrollToBoxes()">Начать игру</button>
+        </div>
+    </section>
+
+    <!-- МОДАЛЬНОЕ ОКНО АУТЕНТИФИКАЦИИ -->
+    <div id="authModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <div class="modal-body">
+                <h2>Вход в систему</h2>
+
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchTab('login')">Вход</button>
+                    <button class="tab-btn" onclick="switchTab('register')">Регистрация</button>
+                </div>
+
+                <!-- ТАБ ВХОДА -->
+                <div id="loginTab" class="tab-content active">
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="loginEmail" required placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Пароль</label>
+                            <input type="password" id="loginPassword" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Вход</button>
+                    </form>
+                </div>
+
+                <!-- ТАБ РЕГИСТРАЦИИ -->
+                <div id="registerTab" class="tab-content">
+                    <form id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="registerEmail" required placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Имя пользователя</label>
+                            <input type="text" id="registerUsername" required placeholder="YourUsername">
+                        </div>
+                        <div class="form-group">
+                            <label>Имя</label>
+                            <input type="text" id="registerFirstName" placeholder="Иван">
+                        </div>
+                        <div class="form-group">
+                            <label>Фамилия</label>
+                            <input type="text" id="registerLastName" placeholder="Петров">
+                        </div>
+                        <div class="form-group">
+                            <label>Пароль</label>
+                            <input type="password" id="registerPassword" required placeholder="••••••••" minlength="6">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ОТКРЫТИЯ БОКСА -->
+    <div id="boxModal" class="modal" style="display: none;">
+        <div class="modal-content modal-box">
+            <span class="close" onclick="closeBoxModal()">&times;</span>
+
+            <div id="boxOpeningAnimation" class="box-animation-container" style="display: none;">
+                <canvas id="rouletteCanvas"></canvas>
+                <div class="animation-text">Открываем бокс...</div>
+            </div>
+
+            <div id="boxInfo" class="modal-body">
+                <h2 id="boxTitle">Выбранный бокс</h2>
+                <div class="box-details">
+                    <img id="boxImage" src="" alt="Box" class="box-image">
+                    <div class="box-info-text">
+                        <p id="boxDescription"></p>
+                        <div class="box-meta">
+                            <span class="item-count">Предметов: <strong id="boxItemCount">0</strong></span>
+                            <span class="price">Цена: <strong id="boxPrice">0 ₽</strong></span>
+                        </div>
+                        <div class="prizes-preview">
+                            <h4>Возможные призы:</h4>
+                            <ul id="prizesList"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="openBoxBtn" class="btn btn-primary btn-lg" onclick="openBox()">
+                        Открыть за <span id="priceText">0</span> ₽
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeBoxModal()">Отмена</button>
+                </div>
+            </div>
+
+            <div id="prizeResult" class="prize-result" style="display: none;">
+                <div class="prize-animation">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h2>Поздравляем!</h2>
+                <p id="prizeResultText">Вы выиграли: <strong id="prizeResultName">iPhone 15</strong></p>
+                <p id="prizeResultValue" class="prize-value"></p>
+                <button class="btn btn-primary" onclick="closeBoxModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ -->
+    <div id="profileModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeProfileModal()">&times;</span>
+            <div class="modal-body">
+                <div class="profile-header">
+                    <img id="userAvatar" src="" alt="Avatar" class="avatar">
+                    <div class="profile-info">
+                        <h2 id="profileUsername">Профиль</h2>
+                        <p id="profileEmail"></p>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()">Выход</button>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span class="label">Баланс</span>
+                        <span class="value" id="profileBalance">0 ₽</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Открыто боксов</span>
+                        <span class="value" id="profileBoxes">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Потрачено</span>
+                        <span class="value" id="profileSpent">0 ₽</span>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <h3>Пополнить баланс</h3>
+                    <div class="payment-methods">
+                        <button class="btn btn-secondary" onclick="openPaymentModal('yookassa')">
+                            <i class="fas fa-credit-card"></i> Яндекс.Касса
+                        </button>
+                        <button class="btn btn-secondary" onclick="openPaymentModal('crypto')">
+                            <i class="fab fa-ethereum"></i> Крипто
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-history">
+                    <h3>История побед</h3>
+                    <div id="userWinsHistory" class="wins-list">
+                        <p>Загрузка...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПЛАТЕЖА -->
+    <div id="paymentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+            <div class="modal-body">
+                <h2>Пополнение баланса</h2>
+
+                <div class="payment-form">
+                    <div class="form-group">
+                        <label>Сумма (₽)</label>
+                        <input type="number" id="paymentAmount" min="100" max="100000" step="100" value="500" placeholder="500">
+                    </div>
+
+                    <div id="paymentOptions">
+                        <button class="btn btn-primary btn-block" id="yookassaPayBtn" style="display: none;" onclick="processYookassaPayment()">
+                            Оплатить через Яндекс.Касса
+                        </button>
+                        <button class="btn btn-primary btn-block" id="cryptoPayBtn" style="display: none;" onclick="processCryptoPayment()">
+                            Оплатить криптовалютой
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО РЕФЕРАЛЬНОЙ ПРОГРАММЫ -->
+    <div id="referralModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeReferralModal()">&times;</span>
+            <div class="modal-body">
+                <h2>
+                    <i class="fas fa-share-alt"></i>
+                    Реферальная программа
+                </h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Пригласите друзей и получайте награды за каждого приглашенного!
+                </p>
+
+                <div class="referral-info">
+                    <div class="referral-stat">
+                        <div class="stat-label">Ваша реферальная ссылка:</div>
+                        <div class="referral-link-container">
+                            <input type="text" id="referralLink" readonly class="referral-link-input" value="">
+                            <button class="btn btn-sm btn-primary" onclick="copyReferralLink()">
+                                <i class="fas fa-copy"></i> Копировать
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="referral-benefits">
+                        <h3>Что вы получаете:</h3>
+                        <ul class="referral-benefits-list">
+                            <li>
+                                <i class="fas fa-coins"></i>
+                                <span><strong>100 монет</strong> за приглашение друга</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-gift"></i>
+                                <span><strong>50 монет</strong> когда друг сделает первый вклад</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-star"></i>
+                                <span><strong>Без лимитов</strong> - приглашайте сколько угодно</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="referral-share">
+                        <h3>Поделитесь:</h3>
+                        <div class="share-buttons">
+                            <button class="btn btn-sm btn-secondary" onclick="shareReferral('telegram')">
+                                <i class="fab fa-telegram"></i> Telegram
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="shareReferral('whatsapp')">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="shareReferral('vk')">
+                                <i class="fab fa-vk"></i> ВКонтакте
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ИСТОРИИ НАГРАД -->
+    <div id="rewardHistoryModal" class="modal" style="display: none;">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-history"></i>
+                    История наград
+                </h2>
+                <span class="total-coins">Всего получено: 0 монет</span>
+                <span class="close" onclick="closeRewardHistoryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="rewardHistoryContainer" class="reward-history-list">
+                    <div class="loading">Загрузка истории...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 RULDETKA.RU - Мистери Боксы. Все права защищены.</p>
+        <p>
+            <a href="#">Правила</a> •
+            <a href="#">Политика</a> •
+            <a href="#">Контакты</a>
+        </p>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
